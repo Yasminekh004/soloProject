@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.codingdojo.chorestrackerpro.models.Chore;
 import com.codingdojo.chorestrackerpro.models.SubChore;
@@ -43,7 +45,10 @@ public class MainController {
 	// Chore
 	
 	@RequestMapping(value = { "/", "/dashboard" })
-	public String home(Principal principal, Model model, HttpSession session) {
+	public String home(Principal principal, Model model, HttpSession session,
+			@RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "4") int size,
+            @RequestParam(required = false) String keyword) {
 		if (principal == null) {
 			return "redirect:/login";
 		}
@@ -64,8 +69,12 @@ public class MainController {
 		}
 		
 		Long id = (Long) session.getAttribute("userId");
-		List<Chore> chores = choreService.AllChores();
+		//List<Chore> chores = choreService.AllChores();
+		Page<Chore> chores = choreService.getPagedChores(page, size, keyword);
 		model.addAttribute("chores", chores);
+		model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", chores.getTotalPages());
+        model.addAttribute("keyword", keyword);
 				
 		List<Chore> myChores = choreService.AllMyChores(id);
 		model.addAttribute("myChores", myChores);
@@ -200,7 +209,7 @@ public class MainController {
 		subChore.setChore_sub(chore);
 		subChoreService.createSubChore(subChore);
 		
-		return "redirect:/chores/"+id;
+		return "redirect:/chores/edit/"+id;
 	}
 	
 	

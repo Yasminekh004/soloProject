@@ -20,12 +20,13 @@ function  myFunction(){
 	const dueDates = document.querySelectorAll('.dueDate');
 	const titles = document.querySelectorAll('.dueDateTitle');
 	const today = new Date().toISOString().split('T')[0];
+		
 	const notificationArea = document.getElementById('notifications');
 
 	    for (let i = 0; i < dueDates.length; i++) {
 	        let due = dueDates[i].innerText.trim();
 	        let title = titles[i].innerText.trim();
-
+				
 	        if (due === today) {
 	            let alert = document.createElement("div");
 	            alert.className = "alert alert-warning alert-dismissible fade show notificationDeco";

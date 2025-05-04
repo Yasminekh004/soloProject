@@ -31,6 +31,23 @@
 			<a href="/chores/new" class="btn button_sub">Add A Job</a>
 		</div>
 
+		<form method="get" action="/">
+		    <input class="form-control mr-sm-2" type="search" name="keyword" placeholder="Search by title" value="${keyword}" aria-label="Search"/>
+		    <input class="btn btn-outline-success" type="submit" value="Search" />
+		</form>
+		<div>
+		    Page ${currentPage + 1} of ${totalPages}
+		</div>
+		
+		<div>
+		    <c:if test="${currentPage > 0}">
+		        <a href="?page=${currentPage - 1}&size=4">Previous</a>
+		    </c:if>
+		
+		    <c:if test="${currentPage + 1 < totalPages}">
+		        <a href="?page=${currentPage + 1}&size=4">Next</a>
+		    </c:if>
+		</div>
 		<table class="table table-striped table-bordered border-dark">
 			<thead>
 				<tr>
@@ -42,7 +59,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<c:forEach var="chore" items="${chores}">
+				<c:forEach var="chore" items="${chores.content}">
 					<tr>
 						<td><c:out value='${chore.title}'></c:out></td>
 						<td><c:out value='${chore.location}'></c:out></td>
@@ -61,6 +78,9 @@
 				</c:forEach>
 			</tbody>
 		</table>
+		
+		
+		
 
 		<table class="table table-striped table-bordered border-dark">
 			<thead>
