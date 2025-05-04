@@ -125,9 +125,7 @@ public class MainController {
 		//model.addAttribute("point", ss.getPoints());
 		return "redirect:/";
 	}
-	
-// /chores/addPoints
-	
+		
 	@GetMapping("/chores/addPoints/{id}")
 	public String addPoints(@PathVariable("id") Long id, Model model, HttpSession session) {
 		Chore  ss = choreService.findChore(id);
@@ -140,6 +138,7 @@ public class MainController {
 		us.setTotalPoints(us.getTotalPoints()+ss.getPoints());
 		userService.updateUser(us);
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<String> logs = (ArrayList<String>) session.getAttribute("logs");
 
 		if (logs == null) {
@@ -218,4 +217,38 @@ public class MainController {
 		
 		return "redirect:/dashboard";
 	}
+	
+	// Admin View
+	
+	@GetMapping("/user/{id}")
+	public String userInfo(@PathVariable Long id, Model model,
+			@RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "4") int size,
+            @RequestParam(required = false) String keyword) {
+		model.addAttribute("userInfo", userService.findById(id));
+		List<Chore> userChores = choreService.AllMyChores(id);
+		model.addAttribute("userChores", userChores);
+		
+		Page<Chore> allChores = choreService.getPagedChores(page, size, keyword);
+		model.addAttribute("allChores", allChores);
+		model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", allChores.getTotalPages());
+        model.addAttribute("keyword", keyword);
+		
+		return "showUserInfo.jsp";		
+	}
+	
+	@GetMapping("/chores/addToUser/{useId}/chore/{choreId}/add")
+	public String addToOtherUser(@PathVariable("choreId") Long choreId, @PathVariable("useId") Long useId) {
+		
+		Chore ch = choreService.findChore(choreId);
+		User user = userService.findById(useId);
+		
+		ch.setUserChores(user);
+		choreService.updateChore(ch);
+		return "redirect:/user/"+useId;
+		
+	}
+	
+	
 }

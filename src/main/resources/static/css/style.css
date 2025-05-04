@@ -51,3 +51,10 @@
 	width: 40%;
 	text-align: center;
 }
+
+
+.userInfoPage{
+	display: flex;
+	gap: 20px;
+	align-items: flex-start; 
+}

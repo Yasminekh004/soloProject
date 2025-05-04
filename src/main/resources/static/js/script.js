@@ -40,7 +40,5 @@ function  myFunction(){
 					alert.remove();
 				}, 2000);
 	        }
-	    }
-		
-		
+	    }		
 }

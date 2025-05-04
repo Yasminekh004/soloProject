@@ -25,34 +25,15 @@
 		<thead>
 			<tr>
 				<th>Name</th>
-				<th>Email</th>
-				<th>Action</th>
+				<th>Total Points</th>
 			</tr>
 		</thead>
 		<tbody>
 			<c:forEach var="user" items="${users}">
-				<c:if test="${!user.roles.get(0).name.contains('ROLE_SUPER_ADMIN')}">
+				<c:if test="${!user.roles.get(0).name.contains('ROLE_ADMIN')}">
 					<tr>
-						<td>${user.firstName}${user.lastName}</td>
-						<td>${user.email}</td>
-						<c:if test="${currentUser.roles.get(0).name.contains('ROLE_SUPER_ADMIN')}">
-							<c:if test="${user.roles.get(0).name.contains('ROLE_USER')}">
-								<td><a href="/delete/${user.id}">Delete</a> <a
-									href="/admin/${user.id}">Make Admin</a></td>
-							</c:if>
-							<c:if test="${user.roles.get(0).name.contains('ROLE_ADMIN')}">
-								<td><a href="/delete/${user.id}">Delete</a></td>
-							</c:if>
-						</c:if>	
-						<c:if test="${currentUser.roles.get(0).name.contains('ROLE_ADMIN')}">
-							<c:if test="${user.roles.get(0).name.contains('ROLE_USER')}">
-								<td><a href="/delete/${user.id}">Delete</a> <a
-									href="/admin/${user.id}">Make Admin</a></td>
-							</c:if>
-							<c:if test="${user.roles.get(0).name.contains('ROLE_ADMIN')}">
-								<td><p>Admin</p></td>
-							</c:if>
-						</c:if>					
+						<td> <a href="/user/${user.id}">${user.firstName} ${user.lastName}</a></td>
+						<td>${user.totalPoints}</td>
 					</tr>
 				</c:if>
 			</c:forEach>
