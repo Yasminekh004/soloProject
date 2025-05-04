@@ -1,0 +1,53 @@
+@charset "UTF-8";
+
+.button_sub{
+	color: black;
+	border: 2px solid black;
+	width: 100%;
+}
+
+
+.distance{
+	padding: 15px 0px;
+}
+.header{
+	padding-top: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+
+
+.button_sub_Stretch{
+	color: white;
+	border: 2px solid black;
+	background-color: #9900FF;
+	width: 100%;
+}
+
+.info{
+	width: 70%;
+}
+
+.froms{	
+	display: flex;
+	justify-content: space-around;
+}
+
+.title{
+	margin: 15px auto;
+}
+
+.topHeader{
+	text-align: right;
+}
+
+#notifications{
+	display: flex;
+	justify-content: flex-end;
+}
+.notificationDeco{
+	width: 40%;
+	text-align: center;
+}
