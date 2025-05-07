@@ -21,9 +21,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.codingdojo.chorestrackerpro.models.Chore;
+import com.codingdojo.chorestrackerpro.models.Comment;
 import com.codingdojo.chorestrackerpro.models.SubChore;
 import com.codingdojo.chorestrackerpro.models.User;
 import com.codingdojo.chorestrackerpro.services.ChoreService;
+import com.codingdojo.chorestrackerpro.services.CommentService;
 import com.codingdojo.chorestrackerpro.services.SubChoreService;
 import com.codingdojo.chorestrackerpro.services.UserService;
 
@@ -32,28 +34,29 @@ import jakarta.validation.Valid;
 
 @Controller
 public class MainController {
-	
+
 	@Autowired
 	ChoreService choreService;
-	
+
 	@Autowired
 	UserService userService;
-	
+
 	@Autowired
 	SubChoreService subChoreService;
 	
+	@Autowired
+	CommentService commentService;
+
 	// Chore
-	
+
 	@RequestMapping(value = { "/", "/dashboard" })
 	public String home(Principal principal, Model model, HttpSession session,
-			@RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "4") int size,
-            @RequestParam(required = false) String keyword) {
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "4") int size,
+			@RequestParam(required = false) String keyword) {
 		if (principal == null) {
 			return "redirect:/login";
 		}
-		
-		
+
 		String email = principal.getName();
 		User user = userService.findByEmail(email);
 		model.addAttribute("user", user);
@@ -67,22 +70,27 @@ public class MainController {
 			model.addAttribute("users", userService.allUsers());
 			return "adminPage.jsp";
 		}
-		
+
 		Long id = (Long) session.getAttribute("userId");
-		//List<Chore> chores = choreService.AllChores();
+		// List<Chore> chores = choreService.AllChores();
+		
+		List<Comment> myComments = commentService.allNotReadCommentsForUser(id);
+		
 		Page<Chore> chores = choreService.getPagedChores(page, size, keyword);
 		model.addAttribute("chores", chores);
 		model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", chores.getTotalPages());
-        model.addAttribute("keyword", keyword);
-				
+		model.addAttribute("totalPages", chores.getTotalPages());
+		model.addAttribute("keyword", keyword);
+		model.addAttribute("myCommentsSize", myComments.size());
+		
+		model.addAttribute("myComments", myComments);
+
 		List<Chore> myChores = choreService.AllMyChores(id);
 		model.addAttribute("myChores", myChores);
-				
+
 		return "dashboard.jsp";
-	}	
-	
-	
+	}
+
 	@GetMapping("/chores/new")
 	public String newChore(@ModelAttribute("chore") Chore project, Model model, HttpSession session) {
 		model.addAttribute("user", userService.findById((Long) session.getAttribute("userId")));
@@ -98,7 +106,7 @@ public class MainController {
 			return "redirect:/";
 		}
 	}
-	
+
 	@GetMapping("/chores/edit/{id}")
 	public String edit(@PathVariable("id") Long id, Model model) {
 
@@ -118,66 +126,63 @@ public class MainController {
 			return "redirect:/";
 		}
 	}
-	
+
 	@DeleteMapping("/chores/{id}")
 	public String delete(@PathVariable("id") Long id, Model model, HttpSession session) {
-		//choreService.deleteChore(id);		
-		//model.addAttribute("point", ss.getPoints());
+		// choreService.deleteChore(id);
+		// model.addAttribute("point", ss.getPoints());
 		return "redirect:/";
 	}
-		
+
 	@GetMapping("/chores/addPoints/{id}")
 	public String addPoints(@PathVariable("id") Long id, Model model, HttpSession session) {
-		Chore  ss = choreService.findChore(id);
+		Chore ss = choreService.findChore(id);
 		Long idUser = (Long) session.getAttribute("userId");
-		
+
 		User us = userService.findById(idUser);
-		
-		
-		
-		us.setTotalPoints(us.getTotalPoints()+ss.getPoints());
+
+		us.setTotalPoints(us.getTotalPoints() + ss.getPoints());
 		userService.updateUser(us);
-		
+
 		@SuppressWarnings("unchecked")
 		ArrayList<String> logs = (ArrayList<String>) session.getAttribute("logs");
 
 		if (logs == null) {
-		    logs = new ArrayList<>();
+			logs = new ArrayList<>();
 		}
-		
-		if(logs.size()>4) {
+
+		if (logs.size() > 4) {
 			logs.remove(4);
 		}
-		
+
 		Date date = new Date();
 		SimpleDateFormat sp = new SimpleDateFormat("MMMM dd yyyy HH:mm:ss");
 		String dateNow = sp.format(date);
 
-		logs.add(0,"You completed "+ss.getTitle()+" at ("+dateNow+") and eraned "+ss.getPoints());
-		
+		logs.add(0, "You completed " + ss.getTitle() + " at (" + dateNow + ") and eraned " + ss.getPoints());
+
 		session.setAttribute("logs", logs);
-		choreService.removeChore(id);	
+		choreService.removeChore(id);
 		return "redirect:/";
 	}
-	
+
 	@GetMapping("/chores/addToUser/{id}/add")
 	public String addToUser(@PathVariable("id") Long id, HttpSession session) {
-		
+
 		Chore ch = choreService.findChore(id);
 		User user = userService.findById((Long) session.getAttribute("userId"));
-		
+
 		ch.setUserChores(user);
 		choreService.updateChore(ch);
 		return "redirect:/";
-		
+
 	}
-	
-	
+
 	@GetMapping("/chores/{id}")
 	public String show(@PathVariable Long id, Model model, HttpSession session) {
 
 		Chore chore = choreService.findChore(id);
-		
+
 		Long idUser = (Long) session.getAttribute("userId");
 		if (idUser == null) {
 			return "redirect:/dashboard";
@@ -189,17 +194,17 @@ public class MainController {
 		model.addAttribute("subChoreList", subChoreList);
 		model.addAttribute("subChoreListSize", subChoreList.size());
 		model.addAttribute("idUser", idUser);
-		
+
 		return "showChore.jsp";
 	}
-	
+
 	@PostMapping("/chores/{choreId}/subChore/new")
 	public String createNewNote(@Valid @ModelAttribute("subChore") SubChore subChore, BindingResult result,
 			@PathVariable("choreId") Long id, Model model, HttpSession session) {
 
 		Chore chore = choreService.findChore(id);
-	
-		if (result.hasErrors()) {							
+
+		if (result.hasErrors()) {
 			model.addAttribute("chore", chore);
 			List<SubChore> subChoreList = subChoreService.getSubChoreByChore(id);
 			model.addAttribute("subChoreList", subChoreList);
@@ -207,48 +212,77 @@ public class MainController {
 		}
 		subChore.setChore_sub(chore);
 		subChoreService.createSubChore(subChore);
-		
-		return "redirect:/chores/edit/"+id;
+
+		return "redirect:/chores/edit/" + id;
 	}
-	
-	
+
 	@GetMapping("/errorPage")
 	public String errorRoute() {
-		
+
 		return "redirect:/dashboard";
 	}
-	
+
 	// Admin View
-	
+
 	@GetMapping("/user/{id}")
-	public String userInfo(@PathVariable Long id, Model model,
-			@RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "4") int size,
-            @RequestParam(required = false) String keyword) {
+	public String userInfo(@PathVariable Long id, Model model, @RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "4") int size, @RequestParam(required = false) String keyword) {
 		model.addAttribute("userInfo", userService.findById(id));
 		List<Chore> userChores = choreService.AllMyChores(id);
 		model.addAttribute("userChores", userChores);
-		
+
 		Page<Chore> allChores = choreService.getPagedChores(page, size, keyword);
 		model.addAttribute("allChores", allChores);
 		model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", allChores.getTotalPages());
-        model.addAttribute("keyword", keyword);
-		
-		return "showUserInfo.jsp";		
+		model.addAttribute("totalPages", allChores.getTotalPages());
+		model.addAttribute("keyword", keyword);
+		model.addAttribute("comment", new Comment());
+
+		return "showUserInfo.jsp";
 	}
-	
+
 	@GetMapping("/chores/addToUser/{useId}/chore/{choreId}/add")
 	public String addToOtherUser(@PathVariable("choreId") Long choreId, @PathVariable("useId") Long useId) {
-		
+
 		Chore ch = choreService.findChore(choreId);
 		User user = userService.findById(useId);
-		
+
 		ch.setUserChores(user);
 		choreService.updateChore(ch);
-		return "redirect:/user/"+useId;
-		
+		return "redirect:/user/" + useId;
+
 	}
 	
+	// Create New Comment
+	
+	@PostMapping("/comment/{useId}/add")
+	public String addComment(@Valid @ModelAttribute("comment") Comment comment, @PathVariable("useId") Long useId, 
+			BindingResult result, HttpSession session) {
+
+		User userReader = userService.findById(useId);
+		
+		Long id = (Long) session.getAttribute("userId");
+		User userWriter = userService.findById(id);
+		
+		if (result.hasErrors()) {
+			return "newChore.jsp";
+		} else {
+			comment.setCommentWriter(userWriter);
+			comment.setCommentReader(userReader);
+			
+			commentService.createComment(comment);
+			return "redirect:/user/" + useId;
+		}
+	}
+	
+	// View user Comment
+	@GetMapping("/inArchive")
+	public String putInArchive(HttpSession session) {
+			
+			Long id = (Long) session.getAttribute("userId");
+			commentService.removComment(id);
+		return "redirect:/";
+
+	}
 	
 }

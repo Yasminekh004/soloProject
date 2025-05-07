@@ -10,35 +10,40 @@
 <title>Admin Dashboard</title>
 </head>
 <body>
-<div class="container">
-	<div class="header distance">
-		<h1>Welcome, ${currentUser.firstName}</h1>
+	<div class="container">
+		<div class="actions">
+			<h1>Welcome, ${currentUser.firstName}</h1>
+			
+			<div class="nav-actions">			
+				<a href="/chores/new" class="btn button_sub">Add A Job</a>
+			
+				<form id="logoutForm" method="POST" action="/logout">
+					<input type="hidden" name="${_csrf.parameterName}"	value="${_csrf.token}" />
+					<input type="submit" value="Logout!"  class="btn button_sub"/>
+				</form>
+			</div>
+		</div>
 
-		<form id="logoutForm" method="POST" action="/logout">
-			<input type="hidden" name="${_csrf.parameterName}"
-			value="${_csrf.token}" /> <input type="submit" value="Logout!" />
-		</form>
+
+		<table class="table table-bordered border-dark">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Total Points</th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach var="user" items="${users}">
+					<c:if test="${!user.roles.get(0).name.contains('ROLE_ADMIN')}">
+						<tr>
+							<td><a href="/user/${user.id}">${user.firstName}
+									${user.lastName}</a></td>
+							<td>${user.totalPoints}</td>
+						</tr>
+					</c:if>
+				</c:forEach>
+			</tbody>
+		</table>
 	</div>
-	
-
-	<table class="table table-bordered border-dark">
-		<thead>
-			<tr>
-				<th>Name</th>
-				<th>Total Points</th>
-			</tr>
-		</thead>
-		<tbody>
-			<c:forEach var="user" items="${users}">
-				<c:if test="${!user.roles.get(0).name.contains('ROLE_ADMIN')}">
-					<tr>
-						<td> <a href="/user/${user.id}">${user.firstName} ${user.lastName}</a></td>
-						<td>${user.totalPoints}</td>
-					</tr>
-				</c:if>
-			</c:forEach>
-		</tbody>
-	</table>
-</div>
 </body>
 </html>

@@ -42,3 +42,25 @@ function  myFunction(){
 	        }
 	    }		
 }
+
+
+
+
+function commentButton(){
+	var x = document.getElementById("myComment");
+	  if (x.style.display === "none") {
+	    x.style.display = "block";
+	  } else {
+	    x.style.display = "none";
+	  }
+}
+
+function showPopup() {
+    const el = document.getElementById('popupBox');
+    if (el) el.style.display = 'block';
+}
+
+function closePopup() {
+	const el = document.getElementById('popupBox');
+    if (el) el.style.display = 'none';
+}

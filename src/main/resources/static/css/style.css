@@ -1,60 +1,83 @@
 @charset "UTF-8";
 
-.button_sub{
+.button_sub {
 	color: black;
 	border: 2px solid black;
 	width: 100%;
 }
 
-
-.distance{
-	padding: 15px 0px;
-}
-.header{
-	padding-top: 10px;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-}
-
-
-
-.button_sub_Stretch{
+.button_sub_Stretch {
 	color: white;
 	border: 2px solid black;
 	background-color: #9900FF;
 	width: 100%;
 }
 
-.info{
+.info {
 	width: 70%;
 }
 
-.froms{	
+.froms {
 	display: flex;
 	justify-content: space-around;
 }
 
-.title{
-	margin: 15px auto;
-}
-
-.topHeader{
+.topHeader {
 	text-align: right;
 }
 
-#notifications{
+#notifications {
 	display: flex;
 	justify-content: flex-end;
 }
-.notificationDeco{
+
+.notificationDeco {
 	width: 40%;
 	text-align: center;
 }
 
-
-.userInfoPage{
+.userInfoPage {
 	display: flex;
 	gap: 20px;
-	align-items: flex-start; 
+	align-items: flex-start;
+	justify-content: space-between;
+}
+
+.tableWrapper {
+	flex: 1;
+}
+
+.actions {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-end;
+	margin-bottom: 15px;
+}
+
+.nav-actions {
+	display: flex;
+	gap: 10px;
+}
+
+.popupBox {
+  position: absolute;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 15px;
+  z-index: 1000;
+  width: 300px;
+  top: 50px;
+  right: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.popupBox .close-btn {
+	float: right;
+	font-size: 20px;
+	cursor: pointer;
+}
+
+.icon-btn {
+	font-size: 24px;
+	cursor: pointer;
 }

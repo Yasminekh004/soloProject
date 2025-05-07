@@ -25,49 +25,46 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
-	@Size(min=3, max=30)
-    private String firstName;
-    
-	@Size(min=3, max=30)
-    private String lastName;
-    
-	@Size(min=5)
-    private String email;
-    
-	@Size(min=5)
-    private String password;
-	
-    private int totalPoints;
-    
-    @Transient
-    private String confirm;
-    
-    @Column(updatable=false)
-    private Date createdAt;
-    
-    @PrePersist
-    protected void onCreate(){
-        this.createdAt = new Date();
-    }
-    
-    private Date lastLogin;
-    
+
+	@Size(min = 3, max = 30)
+	private String firstName;
+
+	@Size(min = 3, max = 30)
+	private String lastName;
+
+	@Size(min = 5)
+	private String email;
+
+	@Size(min = 5)
+	private String password;
+
+	private int totalPoints;
+
+	@Transient
+	private String confirm;
+
+	@Column(updatable = false)
+	private Date createdAt;
+
+	@PrePersist
+	protected void onCreate() {
+		this.createdAt = new Date();
+	}
+
+	private Date lastLogin;
+
 	@OneToMany(mappedBy = "choreCreater", fetch = FetchType.LAZY)
 	private List<Chore> choreCreater;
-	
+
 	@OneToMany(mappedBy = "userChores", fetch = FetchType.LAZY)
 	private List<Chore> userChores;
-    
-    @ManyToMany(fetch=FetchType.EAGER)
-    @JoinTable(
-    		name = "user_roles",
-    		joinColumns = @JoinColumn(name = "user_id"),
-    		inverseJoinColumns = @JoinColumn(name = "role_id")
-    		)
-    private List<Role> roles;
-    
-    public User() {}
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+	private List<Role> roles;
+
+	public User() {
+	}
 
 	public Long getId() {
 		return id;
@@ -140,14 +137,14 @@ public class User {
 	public void setRoles(List<Role> roles) {
 		this.roles = roles;
 	}
-	
+
 	public List<Chore> getChores() {
 		return choreCreater;
 	}
 
 	public void setChores(List<Chore> chores) {
 		this.choreCreater = chores;
-	}	
+	}
 
 	public List<Chore> getUserChores() {
 		return userChores;
