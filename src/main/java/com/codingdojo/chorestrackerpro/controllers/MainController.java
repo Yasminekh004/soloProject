@@ -4,14 +4,15 @@ import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,7 +44,7 @@ public class MainController {
 
 	@Autowired
 	SubChoreService subChoreService;
-	
+
 	@Autowired
 	CommentService commentService;
 
@@ -73,32 +74,56 @@ public class MainController {
 
 		Long id = (Long) session.getAttribute("userId");
 		// List<Chore> chores = choreService.AllChores();
-		
+
 		List<Comment> myComments = commentService.allNotReadCommentsForUser(id);
-		
+
 		Page<Chore> chores = choreService.getPagedChores(page, size, keyword);
 		model.addAttribute("chores", chores);
 		model.addAttribute("currentPage", page);
 		model.addAttribute("totalPages", chores.getTotalPages());
 		model.addAttribute("keyword", keyword);
 		model.addAttribute("myCommentsSize", myComments.size());
-		
+
 		model.addAttribute("myComments", myComments);
 
 		List<Chore> myChores = choreService.AllMyChores(id);
+
+		Map<Long, Integer> totalSubChoreCount = new HashMap<>();
+		Map<Long, Integer> doneSubChoreCount = new HashMap<>();
+
+		for (Chore chore : myChores) {
+			Long choreId = chore.getId();
+			List<SubChore> subChores = subChoreService.getSubChoreByChore(choreId);
+			totalSubChoreCount.put(choreId, subChores.size());
+
+			List<SubChore> doneSubChores = subChoreService.getDoneSubChores(choreId); // You need to implement this if
+																						// not done
+			doneSubChoreCount.put(choreId, doneSubChores.size());
+		}
+
 		model.addAttribute("myChores", myChores);
+		model.addAttribute("totalSubChoreCount", totalSubChoreCount);
+		model.addAttribute("doneSubChoreCount", doneSubChoreCount);
 
 		return "dashboard.jsp";
 	}
 
 	@GetMapping("/chores/new")
-	public String newChore(@ModelAttribute("chore") Chore project, Model model, HttpSession session) {
+	public String newChore(Principal principal, @ModelAttribute("chore") Chore project, Model model,
+			HttpSession session) {
+		if (principal == null) {
+			return "redirect:/login";
+		}
 		model.addAttribute("user", userService.findById((Long) session.getAttribute("userId")));
 		return "newChore.jsp";
 	}
 
 	@PostMapping("/chores/new")
-	public String create(@Valid @ModelAttribute("chore") Chore chore, BindingResult result, HttpSession session) {
+	public String create(Principal principal, @Valid @ModelAttribute("chore") Chore chore, BindingResult result,
+			HttpSession session) {
+		if (principal == null) {
+			return "redirect:/login";
+		}
 		if (result.hasErrors()) {
 			return "newChore.jsp";
 		} else {
@@ -108,7 +133,10 @@ public class MainController {
 	}
 
 	@GetMapping("/chores/edit/{id}")
-	public String edit(@PathVariable("id") Long id, Model model) {
+	public String edit(Principal principal, @PathVariable("id") Long id, Model model) {
+		if (principal == null) {
+			return "redirect:/login";
+		}
 
 		Chore chore = choreService.findChore(id);
 		model.addAttribute("chore", chore);
@@ -117,7 +145,11 @@ public class MainController {
 	}
 
 	@PutMapping("/chores/{id}")
-	public String update(@Valid @ModelAttribute("chore") Chore chore, BindingResult result, Model model) {
+	public String update(Principal principal, @Valid @ModelAttribute("chore") Chore chore, BindingResult result,
+			Model model) {
+		if (principal == null) {
+			return "redirect:/login";
+		}
 		if (result.hasErrors()) {
 			model.addAttribute("chore", chore);
 			return "editChore.jsp";
@@ -127,15 +159,20 @@ public class MainController {
 		}
 	}
 
-	@DeleteMapping("/chores/{id}")
-	public String delete(@PathVariable("id") Long id, Model model, HttpSession session) {
-		// choreService.deleteChore(id);
-		// model.addAttribute("point", ss.getPoints());
+	@GetMapping("/delete/{id}")
+	public String delete(Principal principal, @PathVariable("id") Long id, Model model, HttpSession session) {
+		if (principal == null) {
+			return "redirect:/login";
+		}
+		choreService.deleteChore(id);
 		return "redirect:/";
 	}
 
 	@GetMapping("/chores/addPoints/{id}")
-	public String addPoints(@PathVariable("id") Long id, Model model, HttpSession session) {
+	public String addPoints(Principal principal, @PathVariable("id") Long id, Model model, HttpSession session) {
+		if (principal == null) {
+			return "redirect:/login";
+		}
 		Chore ss = choreService.findChore(id);
 		Long idUser = (Long) session.getAttribute("userId");
 
@@ -167,7 +204,10 @@ public class MainController {
 	}
 
 	@GetMapping("/chores/addToUser/{id}/add")
-	public String addToUser(@PathVariable("id") Long id, HttpSession session) {
+	public String addToUser(Principal principal, @PathVariable("id") Long id, HttpSession session) {
+		if (principal == null) {
+			return "redirect:/login";
+		}
 
 		Chore ch = choreService.findChore(id);
 		User user = userService.findById((Long) session.getAttribute("userId"));
@@ -179,28 +219,41 @@ public class MainController {
 	}
 
 	@GetMapping("/chores/{id}")
-	public String show(@PathVariable Long id, Model model, HttpSession session) {
+	public String show(Principal principal, @PathVariable Long id, Model model, HttpSession session) {
+		if (principal == null) {
+			return "redirect:/login";
+		}
 
 		Chore chore = choreService.findChore(id);
-
 		Long idUser = (Long) session.getAttribute("userId");
 		if (idUser == null) {
 			return "redirect:/dashboard";
 		}
 		model.addAttribute("subChore", new SubChore());
 
+		User user = userService.findById(idUser);
+
+		int isAddedToUser = choreService.IsAddedToUser(id, idUser);
+
 		List<SubChore> subChoreList = subChoreService.getSubChoreByChore(id);
+		List<SubChore> doneSubChoreList = subChoreService.getDoneSubChores(id);
 		model.addAttribute("chore", chore);
 		model.addAttribute("subChoreList", subChoreList);
 		model.addAttribute("subChoreListSize", subChoreList.size());
-		model.addAttribute("idUser", idUser);
+		model.addAttribute("doneSubChoreListSize", doneSubChoreList.size());
+		model.addAttribute("user", user);
+		model.addAttribute("isAddedToUser", isAddedToUser);
 
 		return "showChore.jsp";
 	}
 
 	@PostMapping("/chores/{choreId}/subChore/new")
-	public String createNewNote(@Valid @ModelAttribute("subChore") SubChore subChore, BindingResult result,
-			@PathVariable("choreId") Long id, Model model, HttpSession session) {
+	public String createNewNote(Principal principal, @Valid @ModelAttribute("subChore") SubChore subChore,
+			BindingResult result, @PathVariable("choreId") Long id, Model model, HttpSession session) {
+
+		if (principal == null) {
+			return "redirect:/login";
+		}
 
 		Chore chore = choreService.findChore(id);
 
@@ -216,7 +269,7 @@ public class MainController {
 		return "redirect:/chores/edit/" + id;
 	}
 
-	@GetMapping("/errorPage")
+	@GetMapping("/error")
 	public String errorRoute() {
 
 		return "redirect:/dashboard";
@@ -225,8 +278,13 @@ public class MainController {
 	// Admin View
 
 	@GetMapping("/user/{id}")
-	public String userInfo(@PathVariable Long id, Model model, @RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "4") int size, @RequestParam(required = false) String keyword) {
+	public String userInfo(Principal principal, @PathVariable Long id, Model model,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "4") int size,
+			@RequestParam(required = false) String keyword) {
+		if (principal == null) {
+			return "redirect:/login";
+		}
+
 		model.addAttribute("userInfo", userService.findById(id));
 		List<Chore> userChores = choreService.AllMyChores(id);
 		model.addAttribute("userChores", userChores);
@@ -242,7 +300,11 @@ public class MainController {
 	}
 
 	@GetMapping("/chores/addToUser/{useId}/chore/{choreId}/add")
-	public String addToOtherUser(@PathVariable("choreId") Long choreId, @PathVariable("useId") Long useId) {
+	public String addToOtherUser(Principal principal, @PathVariable("choreId") Long choreId,
+			@PathVariable("useId") Long useId) {
+		if (principal == null) {
+			return "redirect:/login";
+		}
 
 		Chore ch = choreService.findChore(choreId);
 		User user = userService.findById(useId);
@@ -252,37 +314,82 @@ public class MainController {
 		return "redirect:/user/" + useId;
 
 	}
-	
+
 	// Create New Comment
-	
+
 	@PostMapping("/comment/{useId}/add")
-	public String addComment(@Valid @ModelAttribute("comment") Comment comment, @PathVariable("useId") Long useId, 
-			BindingResult result, HttpSession session) {
+	public String addComment(Principal principal, @Valid @ModelAttribute("comment") Comment comment,
+			@PathVariable("useId") Long useId, BindingResult result, HttpSession session, Model model) {
+
+		if (principal == null) {
+			return "redirect:/login";
+		}
 
 		User userReader = userService.findById(useId);
-		
+
 		Long id = (Long) session.getAttribute("userId");
 		User userWriter = userService.findById(id);
-		
+
 		if (result.hasErrors()) {
-			return "newChore.jsp";
-		} else {
-			comment.setCommentWriter(userWriter);
-			comment.setCommentReader(userReader);
-			
-			commentService.createComment(comment);
-			return "redirect:/user/" + useId;
+			User userInfo = userService.findById(id);
+	        model.addAttribute("userInfo", userInfo);
+	        
+			return "showUserInfo.jsp";
 		}
+		
+		comment.setCommentWriter(userWriter);
+		comment.setCommentReader(userReader);
+
+		commentService.createComment(comment);
+		return "redirect:/user/" + useId;
+		
 	}
-	
+
 	// View user Comment
 	@GetMapping("/inArchive")
-	public String putInArchive(HttpSession session) {
-			
-			Long id = (Long) session.getAttribute("userId");
-			commentService.removComment(id);
+	public String putInArchive(Principal principal, HttpSession session) {
+
+		if (principal == null) {
+			return "redirect:/login";
+		}
+
+		Long id = (Long) session.getAttribute("userId");
+		commentService.removComment(id);
 		return "redirect:/";
 
 	}
+
+	@GetMapping("/seeArchive")
+	public String getUserArchive(Principal principal, HttpSession session, Model model,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "4") int size) {
+
+		if (principal == null) {
+			return "redirect:/login";
+		}
+
+		Long id = (Long) session.getAttribute("userId");
+		Page<Comment> allComments = commentService.allReadCommentsForUser(id, page, size);
+		model.addAttribute("currentPageComments", page);
+		model.addAttribute("totalPagesComments", allComments.getTotalPages());
+		model.addAttribute("allComments", allComments);
+		return "archive.jsp";
+
+	}
+
+	@GetMapping("/chore/{choreId}/markAsDone/{subChoreid}")
+	public String markeAsDone(Principal principal, @PathVariable("subChoreid") Long subChoreid,
+			@PathVariable("choreId") Long choreId) {
+		if (principal == null) {
+			return "redirect:/login";
+		}
+		subChoreService.markeAsDone(subChoreid);
+		return "redirect:/chores/" + choreId;
+
+	}
 	
+	@GetMapping("/addToFavorie/{id}")
+	public String addToFavorie(@PathVariable("id") Long id) {
+		commentService.addToFavorie(id);
+		return "redirect:/seeArchive";
+	}
 }

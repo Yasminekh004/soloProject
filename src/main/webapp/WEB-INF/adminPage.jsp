@@ -10,8 +10,8 @@
 <title>Admin Dashboard</title>
 </head>
 <body>
-	<div class="container">
-		<div class="actions">
+	<div class="container info">
+		<div class="actions  navbar navbar-expand-lg">
 			<h1>Welcome, ${currentUser.firstName}</h1>
 			
 			<div class="nav-actions">			

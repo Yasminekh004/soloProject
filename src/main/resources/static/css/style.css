@@ -52,6 +52,8 @@
 	justify-content: space-between;
 	align-items: flex-end;
 	margin-bottom: 15px;
+	gap: 5px;
+	padding: 10px;
 }
 
 .nav-actions {
@@ -80,4 +82,18 @@
 .icon-btn {
 	font-size: 24px;
 	cursor: pointer;
+}
+
+
+.details{
+	display: flex;
+	align-content:center;
+	justify-content: space-around;
+	margin: auto  20px;
+	width: 50%;
+}
+
+.btn_action{
+	width: 300px;
+	float: right;
 }

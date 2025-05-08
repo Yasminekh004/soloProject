@@ -15,7 +15,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "comments")
@@ -25,7 +25,7 @@ public class Comment {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotNull(message = "Commentaire is required!")
+	@NotBlank(message = "Commentaire is required!")
 	@Column(columnDefinition = "TEXT")
 	private String commentText;
 
@@ -38,6 +38,8 @@ public class Comment {
 	private User commentReader;
 	
 	private boolean isRead;
+	
+	private boolean favorie;
 
 	@Column(updatable = false)
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -121,6 +123,14 @@ public class Comment {
 
 	public void setRead(boolean isRead) {
 		this.isRead = isRead;
+	}
+
+	public boolean isFavorie() {
+		return favorie;
+	}
+
+	public void setFavorie(boolean isFavorie) {
+		this.favorie = isFavorie;
 	}
 	
 	

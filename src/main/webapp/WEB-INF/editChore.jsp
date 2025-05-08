@@ -13,12 +13,18 @@
 </head>
 <body>
 	<div class="container info">
-		<h1 class="title">Edit Your Job Posting</h1>
-		<form id="logoutForm" method="POST" action="/logout">
-			<input type="hidden" name="${_csrf.parameterName}"
-				value="${_csrf.token}" /> <input type="submit" value="Logout!" />
-		</form>
-		<a href="/">Back</a>
+		<div class="actions  navbar navbar-expand-lg">
+			<h1>Edit Your Job Posting</h1>
+			
+			<div class="nav-actions">			
+				<a href="/chores/new" class="btn button_sub">Add A Job</a>
+			
+				<form id="logoutForm" method="POST" action="/logout">
+					<input type="hidden" name="${_csrf.parameterName}"	value="${_csrf.token}" />
+					<input type="submit" value="Logout!"  class="btn button_sub"/>
+				</form>
+			</div>
+		</div>
 
 		<div class="froms">
 			<table class="table table-bordered border-dark">
@@ -37,9 +43,21 @@
 								<form:errors path="description" class="text-danger" /></td>
 						</tr>
 						<tr>
-							<td><form:label path="location" class="col-form-label">Location:</form:label></td>
-							<td><form:input path="location" class="form-control" /> <form:errors
-									path="location" class="text-danger" /></td>
+							<td><form:label path="difficulty" class="col-form-label">Difficulty:</form:label></td>
+							<td>	
+								<div class="btn-group difficulty-selector" role="group" aria-label="Difficulty levels">
+									<form:radiobutton path="difficulty" id="easy" value="Easy" cssClass="btn-check"/>
+									<label class="btn btn-outline-success rounded-pill px-4" for="easy">Easy</label>
+									
+									<form:radiobutton path="difficulty" id="medium" value="Medium" cssClass="btn-check"/>
+									<label class="btn btn-outline-warning rounded-pill px-4" for="medium">Medium</label>
+									
+									<form:radiobutton path="difficulty" id="hard" value="Hard" cssClass="btn-check"/>
+									<label class="btn btn-outline-danger rounded-pill px-4" for="hard">Hard</label>
+									
+								</div>  
+								<form:errors path="difficulty" class="text-danger" />
+							</td>
 						</tr>
 						<tr>
 							<td><form:label path="dueDate" class="col-form-label">Due Date:</form:label></td>

@@ -59,7 +59,8 @@ public class ChoreService {
 			Chore chore = optionalChore.get();
 			chore.setTitle(c.getTitle());
 			chore.setDescription(c.getDescription());
-			chore.setLocation(c.getLocation());
+			chore.setDifficulty(c.getDifficulty());
+			chore.setPoints(c.getPoints());
 			chore.setDueDate(c.getDueDate());
 			return choreRepository.save(chore);
 		} else {
@@ -75,8 +76,9 @@ public class ChoreService {
 			Chore chore = optionalChore.get();
 			chore.setTitle(c.getTitle());
 			chore.setDescription(c.getDescription());
-			chore.setLocation(c.getLocation());
+			chore.setDifficulty(c.getDifficulty());
 			chore.setUserChores(optionaluser.get());
+			chore.setPoints(c.getPoints());
 			chore.setDueDate(c.getDueDate());
 			return choreRepository.save(chore);
 		} else {
@@ -104,5 +106,9 @@ public class ChoreService {
 		} else {
 			System.out.println("No Chore with this id to be deleted");
 		}
+	}
+	
+	public int IsAddedToUser(Long choreId, Long userId) {
+		return choreRepository.IsAddedToUser(userId, choreId);
 	}
 }

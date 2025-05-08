@@ -16,10 +16,10 @@
 	<div class="container info">
 		
 		
-		<div class="actions">	
-			<h2 style="margin-bottom: 10px;">
+		<div class="actions navbar navbar-expand-lg">	
+			<h1 style="margin-bottom: 10px;">
 				<c:out value="${userInfo.firstName}"></c:out>'s info list
-			</h2>		
+			</h1>		
 			
 			<div class="nav-actions">
 				<a href="/">Back</a>
@@ -78,10 +78,7 @@
 								<td><a href="/chores/${allChore.id}">View</a> <a
 									href="/chores/addToUser/${userInfo.id}/chore/${allChore.id}/add">add</a>
 									<a href="/chores/edit/${allChore.id}">edit</a>
-									<form action="/chores/${allChore.id}" method="post">
-										<input type="hidden" name="_method" value="delete"> <input
-											type="submit" value="cancel" class="text-start deleteBtn">
-									</form></td>
+									<a href="/delete/${chore.id}" class="btn btn-outline-danger"> cancel </a></td>
 							</tr>
 						</c:forEach>
 					</tbody>
@@ -92,18 +89,10 @@
 		<button class="btn btn-primary" onclick="commentButton()">Add Comment</button>
 			<div id="myComment" style="display: none; margin-top: 10px;">
 				<form:form action="/comment/${userInfo.id}/add" method="post" modelAttribute="comment">
-					<table>
-						<tbody>
-							<tr>
-								<td><form:label path="commentText" class="col-form-label">Comment:</form:label></td>
-								<td>	
-									<form:textarea path="commentText" class="form-control" rows="3" placeholder="Write your comment..." style="width: 100%;"/>  
-									<form:errors path="commentText" class="text-danger" />
-								</td>
-								<td><button class="button_sub btn">Submit</button></td>
-								</tr>
-						</tbody>
-					</table>				
+					<form:label path="commentText" class="col-form-label">Comment:</form:label>
+					<form:textarea path="commentText" class="form-control" rows="3" placeholder="Write your comment..." style="width: 100%;"/>  
+					<form:errors path="commentText" class="text-danger" />
+					<button class="button_sub btn">Submit</button>
 				</form:form>
 			</div>
 	</div>

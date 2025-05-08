@@ -7,43 +7,58 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="UTF-8">
-	<title>Chore Traker Dashboard</title>
-	<link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css" />
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-	<link rel="stylesheet" type="text/css" href="/css/style.css">
-	
+<meta charset="UTF-8">
+<title>Chore Traker Dashboard</title>
+<link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css" />
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css">
+
 </head>
 <body onload="myFunction()">
 	<div class="container info">
-		<div class="actions">
-			<h2>Welcome	<c:out value="${user.firstName}"></c:out></h2>
+		<div class="actions  navbar navbar-expand-lg">
+			<h1>
+				Welcome
+				<c:out value="${user.firstName}"></c:out>
+			</h1>
 			<div class="nav-actions">
-				<span class="fa-layers fa-fw">
-					<i class="fa fa-archive icon-btn" aria-hidden="true"></i>
+				<span class="fa-layers fa-fw"> <a href="/seeArchive"><i
+						class="fa fa-archive icon-btn" aria-hidden="true"></i></a>
 				</span>
 				<div>
-					<span class="fa-layers fa-fw">
-						<i class="fas fa-bell icon-btn" onclick="showPopup()"></i>					    
-					    <span class="fa-layers-counter">${myCommentsSize}</span>
+					<span class="fa-layers fa-fw"> <i
+						class="fas fa-bell icon-btn" onclick="showPopup()"></i> <span
+						class="fa-layers-counter">${myCommentsSize}</span>
 					</span>`
 				</div>
 				<form id="logoutForm" method="POST" action="/logout">
-					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" /> 
-					<input type="submit" value="Logout!" class="btn button_sub" />
+					<input type="hidden" name="${_csrf.parameterName}"
+						value="${_csrf.token}" /> <input type="submit" value="Logout!"
+						class="btn button_sub" />
 				</form>
 			</div>
-			
+
 		</div>
-		
+
 		<div id="popupBox" class="popupBox" style="display: none;">
-		   <form:form method="get" action="/inArchive" modelAttribute="myComments">
-				<input type="submit" value="x" class="close-btn" onclick="closePopup()">
-			</form:form>	
-		    <c:forEach var="myComment" items="${myComments}">		    	
-		        <p><c:out value="${myComment.commentText}"/></p>
-		        <hr>
-		    </c:forEach>
+			<form:form method="get" action="/inArchive"
+				modelAttribute="myComments">
+				<input type="submit" value="x" class="close-btn"
+					onclick="closePopup()">
+			</form:form>
+			<c:if test="${myCommentsSize == 0}">
+				You don't have any new comment, 
+				See archive for your old comments
+			</c:if>
+			<c:if test="${myCommentsSize > 0}">
+				<c:forEach var="myComment" items="${myComments}">
+					<p>
+						<c:out value="${myComment.commentText}" />
+					</p>
+					<hr>
+				</c:forEach>
+			</c:if>
 		</div>
 
 		<div class="topHeader">
@@ -63,22 +78,40 @@
 				placeholder="Search by title" value="${keyword}" aria-label="Search" />
 			<input class="btn btn-outline-success" type="submit" value="Search" />
 		</form>
-		<div>Page ${currentPage + 1} of ${totalPages}</div>
-
-		<div>
-			<c:if test="${currentPage > 0}">
-				<a href="?page=${currentPage - 1}&size=4">Previous</a>
-			</c:if>
-
-			<c:if test="${currentPage + 1 < totalPages}">
-				<a href="?page=${currentPage + 1}&size=4">Next</a>
-			</c:if>
+		
+		<div class="d-flex justify-content-between align-items-center my-3">
+		  <div class="fs-5">
+		    <span class="badge bg-info text-dark">
+		      Page ${currentPage + 1} of ${totalPages}
+		    </span>
+		  </div>
+		
+		  <nav>
+		    <ul class="pagination mb-0">
+		      <c:if test="${currentPage > 0}">
+		        <li class="page-item">
+		          <a class="page-link" href="?page=${currentPage - 1}&size=4" aria-label="Previous">
+		            <span aria-hidden="true">&laquo; Previous</span>
+		          </a>
+		        </li>
+		      </c:if>
+		
+		      <c:if test="${currentPage + 1 < totalPages}">
+		        <li class="page-item">
+		          <a class="page-link" href="?page=${currentPage + 1}&size=4" aria-label="Next">
+		            <span aria-hidden="true">Next &raquo;</span>
+		          </a>
+		        </li>
+		      </c:if>
+		    </ul>
+		  </nav>
 		</div>
+		
 		<table class="table table-striped table-bordered border-dark">
 			<thead>
 				<tr>
 					<th>Job</th>
-					<th>Location</th>
+					<th>Difficulty</th>
 					<th>Due date</th>
 					<th>Points</th>
 					<th>Action</th>
@@ -88,17 +121,23 @@
 				<c:forEach var="chore" items="${chores.content}">
 					<tr>
 						<td><c:out value='${chore.title}'></c:out></td>
-						<td><c:out value='${chore.location}'></c:out></td>
+						<td><c:if test="${chore.difficulty == 'Easy'}">
+								<span class="text-success"><c:out
+										value='${chore.difficulty}'></c:out></span>
+							</c:if> <c:if test="${chore.difficulty == 'Medium'}">
+								<span class="text-warning"><c:out
+										value='${chore.difficulty}'></c:out></span>
+							</c:if> <c:if test="${chore.difficulty == 'Hard'}">
+								<span class="text-danger"><c:out
+										value='${chore.difficulty}'></c:out></span>
+							</c:if></td>
 						<td>${chore.dueDate}</td>
 						<td><c:out value='${chore.points}'></c:out></td>
 						<td><a href="/chores/${chore.id}">View</a> <a
 							href="/chores/addToUser/${chore.id}/add">add</a> <c:if
 								test="${user.id == chore.choreCreater.id}">
 								<a href="/chores/edit/${chore.id}">edit</a>
-								<form action="/chores/${chore.id}" method="post">
-									<input type="hidden" name="_method" value="delete"> <input
-										type="submit" value="cancel" class="text-start deleteBtn">
-								</form>
+								<a href="/delete/${chore.id}"> cancel </a>
 							</c:if></td>
 					</tr>
 				</c:forEach>
@@ -122,8 +161,10 @@
 						<td><span class="dueDateTitle"><c:out
 									value='${myChore.title}'></c:out></span></td>
 						<td><span class="dueDate">${myChore.dueDate}</span></td>
-						<td><a href="/chores/${myChore.id}">View</a> <a
-							href="/chores/addPoints/${myChore.id}">Done</a></td>
+						<td><a href="/chores/${myChore.id}">View</a> <c:if
+								test="${totalSubChoreCount[myChore.id] == doneSubChoreCount[myChore.id]}">
+								<a href="/chores/addPoints/${myChore.id}" onclick="isCongra(${myChore.points},${user.totalPoints})">Done</a>
+							</c:if>
 					</tr>
 				</c:forEach>
 			</tbody>

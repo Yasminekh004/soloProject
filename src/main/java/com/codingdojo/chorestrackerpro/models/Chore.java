@@ -36,9 +36,8 @@ public class Chore {
 	@Column(columnDefinition = "TEXT")
 	private String description;
 
-	@NotNull(message = "Job location is required!")
-	@Size(min = 3, max = 200, message = "Job location must be at least 3 characters.")
-	private String location;
+	@NotNull(message = "Difficulty is required!")
+	private String difficulty;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "chores_creater")
@@ -82,12 +81,12 @@ public class Chore {
 
 	
 
-	public Chore(Long id, String title, String description, String location, User choreCreater, User userChores, LocalDate dueDate, int points) {
+	public Chore(Long id, String title, String description, String difficulty, User choreCreater, User userChores, LocalDate dueDate, int points) {
 		super();
 		this.id = id;
 		this.title = title;
 		this.description = description;
-		this.location = location;
+		this.difficulty = difficulty;
 		this.choreCreater = choreCreater;
 		this.userChores = userChores;
 		this.dueDate = dueDate;
@@ -118,12 +117,12 @@ public class Chore {
 		this.description = description;
 	}
 
-	public String getLocation() {
-		return location;
+	public String getDifficulty() {
+		return difficulty;
 	}
 
-	public void setLocation(String location) {
-		this.location = location;
+	public void setDifficulty(String difficulty) {
+		this.difficulty = difficulty;
 	}
 
 	public Date getCreatedAt() {

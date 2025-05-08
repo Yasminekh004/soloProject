@@ -1,13 +1,20 @@
-function disableIfChecked(prog) {
+function addToProgress(prog) {
   if (prog.checked) {
-    prog.disabled = true;
     let counterSpan = document.getElementById('progress');
     let currentValue = parseInt(counterSpan.innerText, 10);
     currentValue += 1;
   	counterSpan.innerText = currentValue;
+	
   }
 }
 
+function ChangeStyle(star){
+	if (star.style.color === "yellow") {
+	        star.style.color = "gray";
+	    } else {
+	        star.style.color = "yellow";
+	    }
+}
 
 function addPoints() {  
     let counterSpan = document.getElementById('totPoints');
@@ -31,6 +38,11 @@ function  myFunction(){
 	            let alert = document.createElement("div");
 	            alert.className = "alert alert-warning alert-dismissible fade show notificationDeco";
 	            alert.role = "alert";
+				alert.style.position = "fixed";
+				alert.style.top = "50px";
+				alert.style.right = "50px";
+				alert.style.zIndex = "1050"; 
+				alert.style.maxWidth = "300px";
 	            alert.innerHTML = `
 	                <strong>Reminder:</strong> "${title}" is due today!
 	                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -40,7 +52,39 @@ function  myFunction(){
 					alert.remove();
 				}, 2000);
 	        }
-	    }		
+	    }
+		let counterSpan = document.getElementById('totPoints');	
+		let currentValue = parseInt(counterSpan.innerText, 10);
+		
+		if (currentValue % 20 === 0 && currentValue !== 0) {
+		    let congra = document.createElement("div");
+		    congra.className = "alert alert-success alert-dismissible fade show";
+		    congra.role = "alert";
+
+		    // Centered on top styling
+		    congra.style.position = "fixed";
+		    congra.style.top = "30px";
+		    congra.style.left = "50%";
+		    congra.style.transform = "translateX(-50%)";
+		    congra.style.zIndex = "1050";
+		    congra.style.maxWidth = "400px";
+		    congra.style.textAlign = "center";
+		    congra.style.fontSize = "1.1rem";
+		    congra.style.boxShadow = "0px 0px 10px rgba(0,0,0,0.2)";
+
+		    congra.innerHTML = `
+		        🎉 <strong>Congratulations!</strong> You've reached ${currentValue} points!
+		        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+		    `;
+
+		    document.body.appendChild(congra);
+
+		    // Auto remove after 5 seconds
+		    setTimeout(() => {
+		        congra.remove();
+		    }, 5000);
+		}
+
 }
 
 
@@ -63,4 +107,49 @@ function showPopup() {
 function closePopup() {
 	const el = document.getElementById('popupBox');
     if (el) el.style.display = 'none';
+}
+
+
+function isCongra(newPoints,totalPoints){	
+	totalPoints = totalPoints % 20;	
+	const updatedTotal = totalPoints + newPoints;
+	if (updatedTotal >= 20) {
+	        localStorage.setItem("showCongrats", "true");
+	    }	
+}
+
+window.addEventListener("load", () => {
+    if (localStorage.getItem("showCongrats") === "true") {
+        showCongratsAlert();
+        localStorage.removeItem("showCongrats");
+    }
+});
+
+
+function showCongratsAlert() {
+    let congra = document.createElement("div");
+    congra.className = "alert alert-success alert-dismissible fade show";
+    congra.role = "alert";
+
+    congra.style.position = "fixed";
+    congra.style.top = "30px";
+    congra.style.left = "50%";
+    congra.style.transform = "translateX(-50%)";
+    congra.style.zIndex = "1050";
+    congra.style.maxWidth = "600px";
+    congra.style.textAlign = "center";
+    congra.style.fontSize = "24px";
+    congra.style.boxShadow = "0px 0px 10px rgba(0,0,0,0.2)";
+
+    congra.innerHTML = `
+        🎉 <strong>Congratulations!</strong> You've earned 20 new points! Go to your admin 
+		<strong>You've earned a reward!</strong> 🎁
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
+
+    document.body.appendChild(congra);
+
+    setTimeout(() => {
+        congra.remove();
+    }, 5000);
 }
