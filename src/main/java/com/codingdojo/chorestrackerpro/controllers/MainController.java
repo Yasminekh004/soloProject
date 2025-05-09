@@ -68,7 +68,12 @@ public class MainController {
 		}
 		if (user.getRoles().get(0).getName().contains("ROLE_ADMIN")) {
 			model.addAttribute("currentUser", userService.findByEmail(email));
-			model.addAttribute("users", userService.allUsers());
+			
+			Page<User> allUsers = userService.getAllUsers(page, size);
+			model.addAttribute("currentPage", page);
+			model.addAttribute("totalPages", allUsers.getTotalPages());
+			
+			model.addAttribute("users", allUsers);
 			return "adminPage.jsp";
 		}
 
@@ -324,18 +329,20 @@ public class MainController {
 		if (principal == null) {
 			return "redirect:/login";
 		}
+		
+		System.out.println("Hererererer");
 
 		User userReader = userService.findById(useId);
 
 		Long id = (Long) session.getAttribute("userId");
 		User userWriter = userService.findById(id);
-
+		
 		if (result.hasErrors()) {
 			User userInfo = userService.findById(id);
 	        model.addAttribute("userInfo", userInfo);
-	        
+	        model.addAttribute("comment", comment);
 			return "showUserInfo.jsp";
-		}
+		}		
 		
 		comment.setCommentWriter(userWriter);
 		comment.setCommentReader(userReader);
@@ -361,14 +368,14 @@ public class MainController {
 
 	@GetMapping("/seeArchive")
 	public String getUserArchive(Principal principal, HttpSession session, Model model,
-			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "4") int size) {
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "6") int size, @RequestParam(defaultValue = "favorie") String sortBy) {
 
 		if (principal == null) {
 			return "redirect:/login";
 		}
 
 		Long id = (Long) session.getAttribute("userId");
-		Page<Comment> allComments = commentService.allReadCommentsForUser(id, page, size);
+		Page<Comment> allComments = commentService.allReadCommentsForUser(id, page, size, sortBy);
 		model.addAttribute("currentPageComments", page);
 		model.addAttribute("totalPagesComments", allComments.getTotalPages());
 		model.addAttribute("allComments", allComments);

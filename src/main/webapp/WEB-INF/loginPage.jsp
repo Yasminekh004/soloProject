@@ -21,76 +21,78 @@
 			<div class="text-danger"><c:out value="${errorMessage}"></c:out></div>
 		</c:if>
 		
-		<form:form action="/login" method="post" modelAttribute="user">
-			<input type="hidden" name="${_csrf.parameterName}"
-				value="${_csrf.token}" />
-			<table class="table table-bordered border-dark">
-				<thead>
-					<tr>
-						<td colspan="2" class="text-center"><h3>Log In</h3></td>
-					</tr>
-				</thead>
-				<thead>
-					<tr>
-						<td>Email:</td>
-						<td><form:errors path="email" class="text-danger" /> <form:input
-								class="form-control" type="email" path="email" /></td>
-					</tr>
-					<tr>
-						<td>Password:</td>
-						<td><form:errors path="password" class="text-danger" /> <form:input
-								class="form-control" type="password" path="password" /></td>
-					</tr>
-					<tr>
-						<td colspan=2><input class="button_sub btn"
-							type="submit" value="Submit" /></td>
-					</tr>
-				</thead>
-			</table>
-		</form:form>
-		
-		
-
-		<form:form action="/register" method="post" modelAttribute="user">
-			<table class="table table-bordered border-dark">
-				<thead>
-					<tr>
-						<td colspan="2" class="text-center"><h3>Register</h3></td>
-					</tr>
-				</thead>
-				<thead>
-					<tr>
-						<td>First Name:</td>
-						<td><form:errors path="firstName" class="text-danger" /> <form:input
-								class="form-control" path="firstName" /></td>
-					</tr>
-					<tr>
-						<td>Last Name:</td>
-						<td><form:errors path="lastName" class="text-danger" /> <form:input
-								class="form-control" path="lastName" /></td>
-					</tr>
-					<tr>
-						<td>Email:</td>
-						<td><form:errors path="email" class="text-danger" /> <form:input
-								class="form-control" type ="email" path="email" /></td>
-					</tr>
-					<tr>
-						<td>Password:</td>
-						<td><form:errors path="password" class="text-danger" /> <form:input
-								class="form-control" type="password" path="password" /></td>
-					</tr>
-					<tr>
-						<td>Confirm PW:</td>
-						<td><form:errors path="confirm" class="text-danger" /> <form:input
-								class="form-control" type="password" path="confirm" /></td>
-					</tr>
-					<tr>
-						<td colspan=2><input class="button_sub btn" 
-							type="submit" value="Submit" /></td>
-					</tr>
-				</thead>
-			</table>
-		</form:form>		
+		<div class="main">
+			<form:form action="/login" method="post" modelAttribute="user">
+				<input type="hidden" name="${_csrf.parameterName}"
+					value="${_csrf.token}" />
+				<table class="table table-bordered border-dark">
+					<thead>
+						<tr>
+							<td colspan="2" class="text-center"><h3>Log In</h3></td>
+						</tr>
+					</thead>
+					<thead>
+						<tr>
+							<td>Email:</td>
+							<td><form:errors path="email" class="text-danger" /> <form:input
+									class="form-control" type="email" path="email" /></td>
+						</tr>
+						<tr>
+							<td>Password:</td>
+							<td><form:errors path="password" class="text-danger" /> <form:input
+									class="form-control" type="password" path="password" /></td>
+						</tr>
+						<tr>
+							<td colspan=2><input class="button_sub btn"
+								type="submit" value="Submit" /></td>
+						</tr>
+					</thead>
+				</table>
+			</form:form>
+			
+			
+	
+			<form:form action="/register" method="post" modelAttribute="user">
+				<table class="table table-bordered border-dark">
+					<thead>
+						<tr>
+							<td colspan="2" class="text-center"><h3>Register</h3></td>
+						</tr>
+					</thead>
+					<thead>
+						<tr>
+							<td>First Name:</td>
+							<td><form:errors path="firstName" class="text-danger" /> <form:input
+									class="form-control" path="firstName" /></td>
+						</tr>
+						<tr>
+							<td>Last Name:</td>
+							<td><form:errors path="lastName" class="text-danger" /> <form:input
+									class="form-control" path="lastName" /></td>
+						</tr>
+						<tr>
+							<td>Email:</td>
+							<td><form:errors path="email" class="text-danger" /> <form:input
+									class="form-control" type ="email" path="email" /></td>
+						</tr>
+						<tr>
+							<td>Password:</td>
+							<td><form:errors path="password" class="text-danger" /> <form:input
+									class="form-control" type="password" path="password" /></td>
+						</tr>
+						<tr>
+							<td>Confirm PW:</td>
+							<td><form:errors path="confirm" class="text-danger" /> <form:input
+									class="form-control" type="password" path="confirm" /></td>
+						</tr>
+						<tr>
+							<td colspan=2><input class="button_sub btn" 
+								type="submit" value="Submit" /></td>
+						</tr>
+					</thead>
+				</table>
+			</form:form>	
+		</div>	
 	</div>
 
 </body>

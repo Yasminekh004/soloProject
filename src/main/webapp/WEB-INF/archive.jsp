@@ -14,63 +14,67 @@
 <body>
 	<div class="container info">
 
-		<div class="actions navbar navbar-expand-lg">	
-			<h1>Your Comments Archive</h1>
+		<div class="actions navbar-expand navbar-dark bg-dark">		
+			<img alt="Chore Tracker" src="/img/choreTracker.png" width="200px" height="60px">
 			<div class="nav-actions">
-				<a href="/" class="btn button_sub">Back</a> 
+				<a href="/"  class="btn btn-outline-light">Back</a> 
 				<form id="logoutForm" method="POST" action="/logout">
 					<input type="hidden" name="${_csrf.parameterName}"
-					value="${_csrf.token}" /> <input type="submit" value="Logout!" class="btn button_sub"  />
+					value="${_csrf.token}" /> <input type="submit" value="Logout!" class="btn btn-outline-light" />
 				</form>
 			</div>
 		</div>
 		
-		<div class="d-flex justify-content-between align-items-center my-3">
-		  <div class="fs-5">
-		    <span class="badge bg-info text-dark">
-		      Page ${currentPageComments + 1} of ${totalPagesComments}
-		    </span>
-		  </div>
-		
-		  <nav>
-		    <ul class="pagination mb-0">
-		      <c:if test="${currentPageComments > 0}">
-		        <li class="page-item">
-		          <a class="page-link" href="?page=${currentPageComments - 1}&size=4" aria-label="Previous">
-		            <span aria-hidden="true">&laquo; Previous</span>
-		          </a>
-		        </li>
-		      </c:if>
-		
-		      <c:if test="${currentPageComments + 1 < totalPagesComments}">
-		        <li class="page-item">
-		          <a class="page-link" href="?page=${currentPageComments + 1}&size=4" aria-label="Next">
-		            <span aria-hidden="true">Next &raquo;</span>
-		          </a>
-		        </li>
-		      </c:if>
-		    </ul>
-		  </nav>
+		<div class="main">
+			<h1>Your Comments Archive</h1>
+	
+			<div class="d-flex justify-content-between align-items-center my-3">
+			  <div class="fs-5">
+			    <span class="badge bg-info text-dark">
+			      Page ${currentPageComments + 1} of ${totalPagesComments}
+			    </span>
+			  </div>
+			
+			  <nav>
+			    <ul class="pagination mb-0">
+			      <c:if test="${currentPageComments > 0}">
+			        <li class="page-item">
+			          <a class="page-link" href="?page=${currentPageComments - 1}&size=6" aria-label="Previous">
+			            <span aria-hidden="true">&laquo; Previous</span>
+			          </a>
+			        </li>
+			      </c:if>
+			
+			      <c:if test="${currentPageComments + 1 < totalPagesComments}">
+			        <li class="page-item">
+			          <a class="page-link" href="?page=${currentPageComments + 1}&size=6" aria-label="Next">
+			            <span aria-hidden="true">Next &raquo;</span>
+			          </a>
+			        </li>
+			      </c:if>
+			    </ul>
+			  </nav>
+			</div>
+			
+			<table class="table">
+				<tbody>
+					<c:forEach var="comment" items="${allComments.content}">		    	
+						<tr>
+							<td><c:out value="${comment.commentText}"/></td>
+							<td><a href="/addToFavorie/${comment.id}">						
+									<c:if test="${!comment.favorie}">
+									<i class="fa-solid fa-star" style="color: gray;" onclick="ChangeStyle(this)"></i>
+									</c:if>
+									<c:if test="${comment.favorie}">
+									<i class="fa-solid fa-star" style="color: yellow;" onclick="ChangeStyle(this)"></i>
+									</c:if>
+								</a>
+							</td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
 		</div>
-		
-		<table class="table">
-			<tbody>
-				<c:forEach var="comment" items="${allComments.content}">		    	
-					<tr>
-						<td><c:out value="${comment.commentText}"/></td>
-						<td><a href="/addToFavorie/${comment.id}">						
-								<c:if test="${!comment.favorie}">
-								<i class="fa-solid fa-star" style="color: gray;" onclick="ChangeStyle(this)"></i>
-								</c:if>
-								<c:if test="${comment.favorie}">
-								<i class="fa-solid fa-star" style="color: yellow;" onclick="ChangeStyle(this)"></i>
-								</c:if>
-							</a>
-						</td>
-					</tr>
-				</c:forEach>
-			</tbody>
-		</table>
 		
 	</div>
 

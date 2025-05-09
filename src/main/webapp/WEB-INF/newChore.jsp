@@ -12,19 +12,21 @@
 </head>
 <body>
 	<div class="container info">
-		<div class="actions navbar navbar-expand-lg">
-			<h1 class="title">Add A Job</h1>
+		<div class="actions navbar-expand navbar-dark bg-dark">		
+			<img alt="Chore Tracker" src="/img/choreTracker.png" width="200px" height="60px">
 			<div class="nav-actions">
-				<a href="/">Back</a>
+				<a href="/" class="btn btn-outline-light">Back</a>
 				<form id="logoutForm" method="POST" action="/logout">
 					<input type="hidden" name="${_csrf.parameterName}"
-					value="${_csrf.token}" /> <input type="submit" value="Logout!" class="btn button_sub"  />
+					value="${_csrf.token}" /> <input type="submit" value="Logout!"  class="btn btn-outline-light" />
 				</form>
 				
 			</div>			
 		</div>
 
-		<div class="froms">
+		<div class="main">
+					<h1 class="title">Add A Job</h1>
+		
 			<table class="table table-bordered border-dark">				
 				<tbody>
 					<form:form action="/chores/new" method="post" modelAttribute="chore">
