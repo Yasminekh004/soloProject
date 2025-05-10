@@ -16,7 +16,7 @@
 			<img alt="Chore Tracker" src="/img/choreTracker.png" width="200px" height="60px">						
 			<div class="nav-actions">			
 				<a href="/chores/new" class="btn btn-outline-light">Add A Job</a>
-			
+				<a href="/showProfile/${currentUser.id}" class="btn btn-outline-light">Profile</a>
 				<form id="logoutForm" method="POST" action="/logout">
 					<input type="hidden" name="${_csrf.parameterName}"	value="${_csrf.token}" />
 					<input type="submit" value="Logout!" class="btn btn-outline-light"/>
@@ -60,8 +60,9 @@
 			<table class="table table-bordered border-dark">
 				<thead>
 					<tr>
-						<th>Name</th>
+						<th>Username</th>
 						<th>Total Points</th>
+						<th>Score</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -69,7 +70,24 @@
 						<c:if test="${!user.roles.get(0).name.contains('ROLE_ADMIN')}">
 							<tr>
 								<td><a href="/user/${user.id}">${user.firstName} ${user.lastName}</a></td>
-								<td>${user.totalPoints}</td>
+								<td><a href="/showHistroy/${user.id}">${user.totalPoints}</a></td>
+								<td>
+									<c:if test="${user.totalPoints == 0}">
+										<i class="fa-solid fa-star" style="color: grey;"></i>
+									</c:if>
+									<c:if test="${user.totalPoints > 0 && user.totalPoints < 20}">
+										<i class="fa-solid fa-star" style="color: yellow;"></i>
+									</c:if>
+									<c:if test="${user.totalPoints > 20 && user.totalPoints < 100}">
+										<i class="fa-solid fa-star" style="color: yellow;"></i>
+										<i class="fa-solid fa-star" style="color: yellow;"></i>
+									</c:if>
+									<c:if test="${user.totalPoints > 100}">
+										<i class="fa-solid fa-star" style="color: yellow;"></i>
+										<i class="fa-solid fa-star" style="color: yellow;"></i>
+										<i class="fa-solid fa-star" style="color: yellow;"></i>
+									</c:if>
+								</td>
 							</tr>
 						</c:if>
 					</c:forEach>

@@ -35,6 +35,7 @@
 						<span class="fa-layers-counter">${myCommentsSize}</span>
 					</span>`
 				</div>
+				<a href="/showProfile/${user.id}" class="btn btn-outline-light">Profile</a>
 				<form id="logoutForm" method="POST" action="/logout">
 					<input type="hidden" name="${_csrf.parameterName}"
 						value="${_csrf.token}" /> <input type="submit" value="Logout!"
@@ -67,8 +68,15 @@
 
 			<div class="topHeader">
 				<h2>
-					Your Points <span id="totPoints"><c:out
-							value="${user.totalPoints}"></c:out></span>
+					Your Points:
+					<span id="totPoints">
+						<c:if test="${user.totalPoints > 20}">
+							<span style="color: #24c98d; font-size: 45px;"><c:out value="${user.totalPoints}"></c:out></span>
+						</c:if>
+						<c:if test="${user.totalPoints < 20}">
+							<span style="color: #e33f0e; font-size: 45px;"><c:out value="${user.totalPoints}"></c:out></span>
+						</c:if>
+					</span>
 				</h2>
 				<div id="notifications"></div>
 			</div>

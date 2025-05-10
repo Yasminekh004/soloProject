@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -61,6 +62,7 @@
 					<c:forEach var="comment" items="${allComments.content}">		    	
 						<tr>
 							<td><c:out value="${comment.commentText}"/></td>
+							<td><fmt:formatDate pattern="MMMM dd, y" value="${comment.createdAt}"/></td>
 							<td><a href="/addToFavorie/${comment.id}">						
 									<c:if test="${!comment.favorie}">
 									<i class="fa-solid fa-star" style="color: gray;" onclick="ChangeStyle(this)"></i>

@@ -9,6 +9,7 @@
 	<title>Add A Job</title>
 	<link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css" />
 	<link rel="stylesheet" type="text/css" href="/css/style.css">
+	<script src="/js/script.js"></script>
 </head>
 <body>
 	<div class="container info">
@@ -48,16 +49,16 @@
 							<td><form:label path="difficulty" class="col-form-label">Difficulty:</form:label></td>
 							<td>	
 								<div class="btn-group difficulty-selector" role="group" aria-label="Difficulty levels">
-									<form:radiobutton path="difficulty" id="easy" value="Easy" cssClass="btn-check"/>
+									<form:radiobutton path="difficulty" id="easy" value="Easy" cssClass="btn-check" onclick="getDiff()"/>
 									<label class="btn btn-outline-success rounded-pill px-4" for="easy">Easy</label>
 									
-									<form:radiobutton path="difficulty" id="medium" value="Medium" cssClass="btn-check"/>
+									<form:radiobutton path="difficulty" id="medium" value="Medium" cssClass="btn-check" onclick="getDiff()"/>
 									<label class="btn btn-outline-warning rounded-pill px-4" for="medium">Medium</label>
 									
-									<form:radiobutton path="difficulty" id="hard" value="Hard" cssClass="btn-check"/>
-									<label class="btn btn-outline-danger rounded-pill px-4" for="hard">Hard</label>
-									
+									<form:radiobutton path="difficulty" id="hard" value="Hard" cssClass="btn-check" onclick="getDiff()"/>
+									<label class="btn btn-outline-danger rounded-pill px-4" for="hard">Hard</label>									
 								</div>  
+								
 								<form:errors path="difficulty" class="text-danger" />
 							</td>
 						</tr>
@@ -71,7 +72,7 @@
 						<tr>
 							<td><form:label path="points" class="col-form-label">Points:</form:label></td>
 							<td>	
-								<form:input path="points" type="number" class="form-control " /> 
+								<form:input path="points" type="number" class="form-control " id="chorePoint" /> 
 								<form:errors path="points" class="text-danger" />
 							</td>
 						</tr>

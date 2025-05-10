@@ -153,3 +153,26 @@ function showCongratsAlert() {
         congra.remove();
     }, 5000);
 }
+
+function getDiff(){
+	const isHard = document.getElementById("hard").checked;
+	const isMedium = document.getElementById("medium").checked;
+	const isEasy = document.getElementById("easy").checked;
+		
+	let chorePoint = document.getElementById("chorePoint");
+	
+	if(isHard){
+		chorePoint.max = 20;
+		chorePoint.min = 10;
+	}
+	
+	if(isMedium){
+		chorePoint.max = 9;
+		chorePoint.min = 6;
+	}
+		
+	if(isEasy){
+		chorePoint.max = 5;
+		chorePoint.min = 1;
+	}
+}

@@ -1,5 +1,9 @@
 package com.codingdojo.chorestrackerpro.controllers;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.codingdojo.chorestrackerpro.models.Chore;
 import com.codingdojo.chorestrackerpro.models.Comment;
+import com.codingdojo.chorestrackerpro.models.ImgInfo;
 import com.codingdojo.chorestrackerpro.models.SubChore;
 import com.codingdojo.chorestrackerpro.models.User;
 import com.codingdojo.chorestrackerpro.services.ChoreService;
@@ -285,7 +291,7 @@ public class MainController {
 	@GetMapping("/user/{id}")
 	public String userInfo(Principal principal, @PathVariable Long id, Model model,
 			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "4") int size,
-			@RequestParam(required = false) String keyword) {
+			@RequestParam(required = false) String keyword, HttpSession session) {
 		if (principal == null) {
 			return "redirect:/login";
 		}
@@ -293,6 +299,8 @@ public class MainController {
 		model.addAttribute("userInfo", userService.findById(id));
 		List<Chore> userChores = choreService.AllMyChores(id);
 		model.addAttribute("userChores", userChores);
+		
+		Long idCurrent = (Long) session.getAttribute("userId");
 
 		Page<Chore> allChores = choreService.getPagedChores(page, size, keyword);
 		model.addAttribute("allChores", allChores);
@@ -300,6 +308,7 @@ public class MainController {
 		model.addAttribute("totalPages", allChores.getTotalPages());
 		model.addAttribute("keyword", keyword);
 		model.addAttribute("comment", new Comment());
+		model.addAttribute("idCurrent", idCurrent);
 
 		return "showUserInfo.jsp";
 	}
@@ -398,5 +407,76 @@ public class MainController {
 	public String addToFavorie(@PathVariable("id") Long id) {
 		commentService.addToFavorie(id);
 		return "redirect:/seeArchive";
+	}
+	
+	
+	@GetMapping("/showHistroy/{id}")
+	public String showHistory(Principal principal, Model model, @PathVariable("id") Long userId, 
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "6") int size) {
+
+		if (principal == null) {
+			return "redirect:/login";
+		}
+
+		Page<Chore> userDoneChores = choreService.getPagedChoresById(page, size, userId);
+		User user = userService.findById(userId);
+		System.out.println("userDoneChores "+userDoneChores);
+		model.addAttribute("allDoneChores", userDoneChores);
+		model.addAttribute("currentPageDoneChores", page);
+		model.addAttribute("totalPagesDoneChores", userDoneChores.getTotalPages());		
+		model.addAttribute("choreUser", user);
+		return "showHistory.jsp";
+
+	}
+	
+	
+	@GetMapping("/showProfile/{id}")
+	public String showProfile(Principal principal, Model model, @PathVariable("id") Long userId) {
+
+		if (principal == null) {
+			return "redirect:/login";
+		}
+
+		User user = userService.findById(userId);	
+		model.addAttribute("currentUser", user);
+		return "profile.jsp";
+
+	}
+	
+	@PutMapping("/addImg/{id}")
+	public String addImg(@Valid @ModelAttribute("imgUser") ImgInfo imgUser, Principal principal, Model model, @PathVariable("id") Long userId) throws IOException {
+
+		if (principal == null) {
+			return "redirect:/login";
+		}
+
+        String uploadDir = new ClassPathResource("static/img/").getFile().getAbsolutePath();
+        Path filePath = Paths.get(uploadDir, imgUser.getFilename().getOriginalFilename());
+        Files.write(filePath, imgUser.getFilename().getBytes());
+        
+		User user = userService.findById(userId);
+		
+		user.setImgName(imgUser.getFilename().getOriginalFilename());
+		userService.updateUser(user);
+		
+		model.addAttribute("currentUser", user);
+		
+		return "redirect:/showProfile/"+userId;
+
+	}
+	
+	@PutMapping("/updateUserName/{id}")
+	public String updateUSer(@Valid @ModelAttribute("userChangeName") String userChangeName, Principal principal, Model model, @PathVariable("id") Long userId) throws IOException {
+
+		if (principal == null) {
+			return "redirect:/login";
+		}
+		User user = userService.findById(userId);		
+		user.setFirstName(userChangeName);
+		userService.updateUser(user);		
+		model.addAttribute("currentUser", user);
+		
+		return "redirect:/showProfile/"+userId;
+
 	}
 }

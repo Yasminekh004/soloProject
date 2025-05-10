@@ -39,6 +39,8 @@ public class User {
 	private String password;
 
 	private int totalPoints;
+	
+	private String imgName;
 
 	@Transient
 	private String confirm;
@@ -169,4 +171,14 @@ public class User {
 	public void setChoreCreater(List<Chore> choreCreater) {
 		this.choreCreater = choreCreater;
 	}
+
+	public String getImgName() {
+		return imgName;
+	}
+
+	public void setImgName(String imgName) {
+		this.imgName = imgName;
+	}
+	
+	
 }

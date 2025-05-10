@@ -46,25 +46,46 @@
 						<tbody>
 							<c:forEach var="userChore" items="${userChores}">
 								<tr>
-									<td><span class="dueDateTitle"><c:out
-												value='${userChore.title}'></c:out></span></td>
+									<td>
+										<span class="dueDateTitle">
+											<a href="/chores/${userChore.id}"><c:out value='${userChore.title}'></c:out></a>
+										</span>
+									</td>
 								</tr>
 							</c:forEach>
 						</tbody>
 					</table>
 				</div>
 				<div class="tableWrapper">
-					<div>Page ${currentPage + 1} of ${totalPages}</div>
-	
-					<div>
-						<c:if test="${currentPage > 0}">
-							<a href="?page=${currentPage - 1}&size=4" >Previous</a>
-						</c:if>
-	
-						<c:if test="${currentPage + 1 < totalPages}">
-							<a href="?page=${currentPage + 1}&size=4">Next</a>
-						</c:if>
+									
+					<div class="d-flex justify-content-between align-items-center my-3">
+					  <div class="fs-5">
+					    <span class="badge bg-info text-dark">
+					      Page ${currentPage + 1} of ${totalPages}
+					    </span>
+					  </div>
+					
+					  <nav>
+					    <ul class="pagination mb-0">
+					      <c:if test="${currentPage > 0}">
+					        <li class="page-item">
+					          <a class="page-link" href="?page=${currentPage - 1}&size=6" aria-label="Previous">
+					            <span aria-hidden="true">&laquo; Previous</span>
+					          </a>
+					        </li>
+					      </c:if>
+					
+					      <c:if test="${currentPage + 1 < totalPages}">
+					        <li class="page-item">
+					          <a class="page-link" href="?page=${currentPage + 1}&size=6" aria-label="Next">
+					            <span aria-hidden="true">Next &raquo;</span>
+					          </a>
+					        </li>
+					      </c:if>
+					    </ul>
+					  </nav>
 					</div>
+			
 					<table class="table table-striped table-bordered border-dark">
 						<thead>
 							<tr>
@@ -81,7 +102,7 @@
 									<td><a href="/chores/${allChore.id}">View</a> <a
 										href="/chores/addToUser/${userInfo.id}/chore/${allChore.id}/add">add</a>
 										<a href="/chores/edit/${allChore.id}">edit</a>
-										<a href="/delete/${chore.id}" class="btn btn-outline-danger"> cancel </a></td>
+										<a href="/delete/${allChore.id}" class="btn btn-outline-danger"> cancel </a></td>
 								</tr>
 							</c:forEach>
 						</tbody>

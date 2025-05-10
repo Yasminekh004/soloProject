@@ -111,4 +111,10 @@ public class ChoreService {
 	public int IsAddedToUser(Long choreId, Long userId) {
 		return choreRepository.IsAddedToUser(userId, choreId);
 	}
+	
+	public Page<Chore> getPagedChoresById(int page, int size, Long id) {
+        Pageable pageable = PageRequest.of(page, size);        
+        System.out.println("id "+id);
+        return choreRepository.findUserAndDone(id, pageable);
+    }
 }

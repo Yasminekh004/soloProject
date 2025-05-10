@@ -25,4 +25,8 @@ public interface ChoreRepository extends JpaRepository<Chore, Long> {
 	
 	@Query(value = "SELECT count(*) FROM chores WHERE user_chores = ?1 and id = ?2", nativeQuery = true)
 	int IsAddedToUser(Long userId, Long choreId);
+	
+	
+	@Query(value = "SELECT * FROM chores WHERE user_chores = ?1 AND deleted = true", nativeQuery = true)
+	Page<Chore> findUserAndDone(Long id, Pageable pageable);
 }
