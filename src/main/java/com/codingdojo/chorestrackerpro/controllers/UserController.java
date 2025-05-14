@@ -28,8 +28,6 @@ public class UserController {
 	@RequestMapping("/register")
 	public String registration(@Valid @ModelAttribute("user") User user, BindingResult result, Model model,
 			HttpServletRequest request) {
-		System.out.println("result "+result);
-		System.out.println("user "+user);
 		userValidator.validate(user, result);
 		String password = user.getPassword();
 		if (result.hasErrors()) {

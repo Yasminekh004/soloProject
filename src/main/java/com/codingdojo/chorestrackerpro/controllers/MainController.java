@@ -272,7 +272,7 @@ public class MainController {
 			model.addAttribute("chore", chore);
 			List<SubChore> subChoreList = subChoreService.getSubChoreByChore(id);
 			model.addAttribute("subChoreList", subChoreList);
-			return "showChore.jsp";
+			return "editChore.jsp";
 		}
 		subChore.setChore_sub(chore);
 		subChoreService.createSubChore(subChore);
@@ -339,8 +339,6 @@ public class MainController {
 			return "redirect:/login";
 		}
 		
-		System.out.println("Hererererer");
-
 		User userReader = userService.findById(useId);
 
 		Long id = (Long) session.getAttribute("userId");

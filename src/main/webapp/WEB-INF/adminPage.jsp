@@ -72,17 +72,17 @@
 								<td><a href="/user/${user.id}">${user.firstName} ${user.lastName}</a></td>
 								<td><a href="/showHistroy/${user.id}">${user.totalPoints}</a></td>
 								<td>
-									<c:if test="${user.totalPoints == 0}">
+									<c:if test="${user.totalPoints == 0 || user.totalPoints < 20 }">
 										<i class="fa-solid fa-star" style="color: grey;"></i>
 									</c:if>
-									<c:if test="${user.totalPoints > 0 && user.totalPoints < 20}">
+									<c:if test="${user.totalPoints >= 20 && user.totalPoints < 50}">
 										<i class="fa-solid fa-star" style="color: yellow;"></i>
 									</c:if>
-									<c:if test="${user.totalPoints > 20 && user.totalPoints < 100}">
+									<c:if test="${user.totalPoints >= 50 && user.totalPoints < 100}">
 										<i class="fa-solid fa-star" style="color: yellow;"></i>
 										<i class="fa-solid fa-star" style="color: yellow;"></i>
 									</c:if>
-									<c:if test="${user.totalPoints > 100}">
+									<c:if test="${user.totalPoints >= 100}">
 										<i class="fa-solid fa-star" style="color: yellow;"></i>
 										<i class="fa-solid fa-star" style="color: yellow;"></i>
 										<i class="fa-solid fa-star" style="color: yellow;"></i>

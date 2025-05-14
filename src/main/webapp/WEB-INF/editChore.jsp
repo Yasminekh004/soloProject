@@ -94,8 +94,8 @@
 							modelAttribute="subChore">
 							<tr>
 								<td><form:label path="title" class="col-form-label Stretch">Sub-Chore Title:</form:label></td>
-								<td><form:input path="title" class="form-control" /> <form:errors
-										path="title" class="text-danger" /></td>
+								<td><form:input path="title" class="form-control" /> 
+								<form:errors path="title" class="text-danger" /></td>
 							</tr>
 							<tr>
 								<td colspan="2" class="text-end">
